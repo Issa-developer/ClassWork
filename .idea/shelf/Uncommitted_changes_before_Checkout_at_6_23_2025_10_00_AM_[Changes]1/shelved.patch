@@ -1,0 +1,432 @@
+Index: ShoppingCart.py
+===================================================================
+diff --git a/ShoppingCart.py b/ShoppingCart.py
+new file mode 100644
+--- /dev/null	(date 1749448318446)
++++ b/ShoppingCart.py	(date 1749448318446)
+@@ -0,0 +1,46 @@
++class ShoppingCart:
++
++    def __init__(self):
++        self.items = []
++
++    def add_items(self, item_name: str, qty: int, unit_price: float):
++        self.items.append((item_name, qty, unit_price))
++
++    def remove_item(self, item_name: str):
++
++        for item in self.items:
++            if item[0] == item_name:
++                self.items.remove(item)
++                break
++
++    def calculate_total(self) -> float:
++        total = 0.0
++
++        for name, qty, price in self.items:
++            total += qty * price
++
++        return  total
++
++    def summary(self):
++
++        print("Cart Contents")
++        for name, qty, price in self.items:
++            print(f"{name}: {qty} @ Ksh {price:.2f} each")
++
++        print(f"Total: Ksh {self.calculate_total():.2f}\n")
++
++def checkout(cart: ShoppingCart):
++    cart.summary()
++    print(f"Final amount: Ksh{cart.calculate_total():.2f}\n")
++
++#Usage
++if __name__ == "__main__":
++
++    cart: ShoppingCart = ShoppingCart()
++    cart.add_items("Kiwi", 50, 79.2)
++    cart.add_items("Papaya", 30, 40.1)
++    cart.add_items("Guava", 10, 30.3)
++
++    print(">>> Regular Cart <<<")
++
++    checkout(cart)
+\ No newline at end of file
+Index: StacksLList.py
+===================================================================
+diff --git a/StacksLList.py b/StacksLList.py
+new file mode 100644
+--- /dev/null	(date 1749448318436)
++++ b/StacksLList.py	(date 1749448318436)
+@@ -0,0 +1,72 @@
++# Advanced Stack Implementation Using Linked List (Conceptual for Large Data)
++# Sometimes, stacks are implemented using linked lists
++# To avoid resizing issues with lists and to practice pointer manipulation.
++
++# Node class for linked list
++class StackNode:
++    def _init_(self, value):
++        self.value = value  # Store the node's data
++        self.next = None    # Pointer to the next node (below in stack)
++
++# Stack implemented with linked list
++class LinkedListStack:
++    def _init_(self):
++        self.top = None  # Points to the top node in the stack
++
++    def is_empty(self):
++        # Stack is empty if top pointer is None
++        return self.top is None
++
++    def push(self, value):
++        # Create a new node with the value
++        new_node = StackNode(value)
++
++        # New node's next pointer should point to current top node
++        new_node.next = self.top
++
++        # Update top pointer to new node (new top of stack)
++        self.top = new_node
++
++    def pop(self):
++        # If stack is empty, raise error
++        if self.is_empty():
++            raise Exception("Cannot pop from empty stack!")
++
++        # Retrieve value from top node
++
++        popped_value = self.top.value
++
++        # Move top pointer to next node down the stack
++        self.top = self.top.next
++
++        # Return popped value
++        return popped_value
++
++    def peek(self):
++        # Return top element value without removing it
++        if self.is_empty():
++            raise Exception("Cannot peek on empty stack!")
++        return self.top.value
++
++    def display(self):
++        # Print stack from top to bottom
++        current = self.top
++        values = []
++        while current:
++            values.append(str(current.value))
++            current = current.next
++        print("Stack from top to bottom:", " -> ".join(values))
++
++# Example usage:
++if __name__ == "_main_":
++    stack_ll = LinkedListStack()
++    stack_ll.push(5)
++    stack_ll.push(10)
++    stack_ll.push(15)
++
++    stack_ll.display()  # Expected: Stack from top to bottom: 15 -> 10 -> 5
++
++    print("Peek top:", stack_ll.peek())  # Expected: 15
++
++    print("Pop:", stack_ll.pop())  # Expected: 15
++    stack_ll.display()  # Expected: 10 -> 5
+\ No newline at end of file
+Index: QueuesUsingCircularArrays.py
+===================================================================
+diff --git a/QueuesUsingCircularArrays.py b/QueuesUsingCircularArrays.py
+new file mode 100644
+--- /dev/null	(date 1749448318421)
++++ b/QueuesUsingCircularArrays.py	(date 1749448318421)
+@@ -0,0 +1,91 @@
++class CircularArrayQueue:
++    DEFAULT_CAPACITY = 10
++
++    def _init_(self):
++        self._front = None
++        self._data = [None] * CircularArrayQueue.DEFAULT_CAPACITY
++        self._size = 0
++        self._front = 0
++
++    def _len_(self):
++        return self._size
++
++
++    def is_empty(self):
++        return self._size == 0
++
++
++    def first (self):
++        if  self.is_empty():
++            raise Empty ('Queue is empty')
++        return self._data[self._front]
++
++
++    def dequeue(self):
++        if self.is_empty():
++            raise Empty ('Queue is empty')
++
++        item_to_dequeue = self._data[self._front]
++        self._data[self._front] = None
++        self._front = (self._front + 1 ) % len(self._data)
++        self._size -= 1
++
++        return item_to_dequeue
++
++
++    def enqueue(self,element):
++        if self._size == len(self._data):
++            self._resize(2*len(self._data))
++        back_of_the_queue = (self._front + self._size) % len(self._data)
++        self._data[back_of_the_queue] = element
++        self._size +=1
++
++    def _resize(self, new_capacity):
++        old_data = self._data
++        self._data = [None] * new_capacity
++
++        current_index = self._front
++        for item in range(self._size):
++            self._data[item] = old_data[current_index]
++            current_index = (current_index +1 ) % len(old_data)
++        self._front = 0
++
++class Empty(Exception):
++
++    def _init_(self,message= "Queue is empty"):
++        self.message = message
++        super()._init_(self.message)
++
++
++if __name__ == "__main__":
++    queue = CircularArrayQueue()
++
++    print("Queues Using Circular Arrays")
++    print(f"The initial queue size is: {len(queue)}")
++    print(f"Is queue empty?{queue.is_empty()}")
++
++    print("\n Enqueueing our queue")
++    elements_to_enqueue = ['Alice','Bob','William','Dorothy','jessica']
++
++    for person in elements_to_enqueue:
++        queue.enqueue(person)
++        print(f"\n person at the front of the line: {queue.first()}")
++
++
++    print("\nServing people from the front of the queue:")
++    for i in range(3):
++        served_person = queue.dequeue()
++        print(f"Served: {served_person}.Queue size is now: {len(queue)}")
++    print("\n Adding more people to induce a wrap around in the array ")
++    more_people = ['Frank','Linda','Ford']
++
++    for person in more_people:
++        queue.enqueue(person)
++        print(f"Added {person}.Queue size is now: {len(queue)}")
++
++    print(f"\nPerson currently at the front: {queue.first()}")
++    print(f"Total people still in queue: {len(queue)}")
++
++    print(f"\nInternal details: ")
++    print(f"Front index: {queue._front}")
++    print(f"Array contents: {queue._data}")
+\ No newline at end of file
+Index: traversals.py
+===================================================================
+diff --git a/traversals.py b/traversals.py
+new file mode 100644
+--- /dev/null	(date 1749450420621)
++++ b/traversals.py	(date 1749450420621)
+@@ -0,0 +1,9 @@
++class TreeNode:
++    def __init__(self, vlaue):
++        self.left = None
++        self.right = None
++        self.value = value
++
++    def insert(self):
++
++
+Index: LinkedLists.py
+===================================================================
+diff --git a/LinkedLists.py b/LinkedLists.py
+new file mode 100644
+--- /dev/null	(date 1749448318470)
++++ b/LinkedLists.py	(date 1749448318470)
+@@ -0,0 +1,79 @@
++#lINKED lISTS WERE created to overcome the drawbacks associated with storing data
++# in regular lists, arrays, as outlined below.
++#1. Ease of insertion and deletion of data
++#They store elements in non-contiguous memory locations and connect them through the use of pointers to subsequent nodes
++#We only modify nodes
++#2. The aspect of dynamic size, linked lists grow and shrink dynamically compared to
++#arrays and lists which need complex operations to grow.
++
++class Node: #A node is an element that stores data and reference to the next node
++    def __init__(self, data):
++        self.data = data #Assigns the given data to the node
++        self.next = None #Sets the next attribute pointer to null.  As we continue to add new nodes, this attribute will be updated to point to the next node
++
++"""
++We will start by initializing the linked list which will encapsulate all the operations for managing the nodes, such as insertion and removal
++"""""
++
++class LinkedList:
++
++    ##We add a new method to create a new node and place it at the start of the list
++    def insertAtBeginning(self, new_data):  # EVerytime this method is called a new node is created
++        # and it is made the top of the list. The next pointer of this node is set to the current head of the list,
++        # which will place this new node infornt of all the existing nodes
++        new_node = Node(new_data)
++        new_node.next = self.head
++        self.head = new_node
++
++    def insertAtEnd(self, new_data):  # Inserting a new nod at the end of the list
++        new_node = Node(new_data)  # Creates a new node
++
++        if self.head is None:  # If the list is empty, make the new node the head
++            self.head = new_node
++            return
++
++        last = self.head
++
++        while last.next:  # Otherwise traverse the list to find the last node
++            last = last.next
++
++        last.next = new_node  # Make the new node the next node of the last node
++
++    def printList(self):
++        temp = self.head  # Starts from the head of the list
++        while temp:
++            print(temp.data, end=' ')  # Prints the data in the current node
++            temp = temp.next  # Move to the next node
++        print()
++
++
++    def __init__(self):
++        self.head = None
++        #The init method is a special method in python classes, known as a constructor
++        #This constructor is called when an object is created from the class and, it allows the class to initialize the attributes.
++
++        ##By setting self.head to None, we are stating that the Linked lists is initially empty
++        ##And that there are no nodes in the list to point to, we will now proceed to populate the list by inserting new  nodes
++
++
++if __name__ == '__main__':
++    #Create a new instance of LinkedList
++    llist = LinkedList()
++
++    #Insert each element at the beginning using the method we created
++    llist.insertAtBeginning('jumps')
++    llist.insertAtBeginning('fox')
++    llist.insertAtBeginning('brown')
++    llist.insertAtBeginning('quick')
++    llist.insertAtBeginning('the')
++
++    #Now 'the' is the head of the list followed by 'quick' then 'brown' and finally 'fox'
++    #print the list
++    llist.printList()
++    #Insert a word at the end
++    llist.insertAtEnd('over the lazy dog')
++
++    llist.printList()
++    
++
++
+Index: StacksBasics.py
+===================================================================
+diff --git a/StacksBasics.py b/StacksBasics.py
+new file mode 100644
+--- /dev/null	(date 1749448318454)
++++ b/StacksBasics.py	(date 1749448318454)
+@@ -0,0 +1,90 @@
++stack = [] #Creates an empty list to represent a stack
++
++stack.append(10) #Adds 10 to the top of the stack
++stack.append(20) #Adds 20 to the top of the stack
++stack.append(30) #adss 30 to the top of the stack
++
++print("Stack after pushes: ", stack) # Expected: [10,20,30]
++
++# peek at the top element (last element in the element)
++top_element = stack[-1] #Access the last element without removing it
++print("Top element is: ", top_element) #Expected: 30. Since 30 is the last element
++# you pushed into the stack
++# and the stack uses the LIFO principle, it will be the first to be displayed
++
++#Check if stack is empty
++if len(stack) == 0:
++    print("Stack is empty")
++else:
++    print("Stack is not empty")
++
++ #The second method is via custom classes, Here we implement a
++# stack class with all key operations
++class SimpleStack:
++    def __init__(self):
++        self.items = [] #INitialise an empty list to hold stack elements
++
++    def is_empty(self):
++        return len(self.items) == 0 #Returns true if the stack has no elements, otherwise retuern false
++
++    #Add item to the top of the stack
++    def push(self, item):
++        self.items.append(item)
++
++    #Remove an item from the top of the list and return it
++    def pop(self): #if stack is empty, return an error to avoid an invalid operation
++        if self.is_empty():
++            raise Exception("Cannot pop an empty stack")
++        return self.items.pop()
++
++    #PEEK: Return the top item in the stack without removing it.
++    def peek(self):
++        # Raise an error if the stack is empty
++        if self.is_empty():
++            raise Exception("STACK IS EMPTY")
++        #The top most element is the last t be pushed,
++        #since the actual size of the list is greater than position by one,
++        # minus one returns the last element
++        return self.items[-1]
++    #SIZE: Return the number of all the items in the stack
++    def size(self):
++        return len(self.items)
++
++    def print_stack(self): #Prin tall the items in the stack from bottom to top
++        print("Stack from bottom to top: ", self.items)
++        return
++
++#Main meal
++if __name__ == "__main__":
++    #instantiate the class stack by creating an object for it
++    stack1 = SimpleStack()
++
++    #Then push some elements
++    stack1.push(1000)
++    stack1.push(2000)
++    stack1.push(3000)
++    stack1.push(4000)
++
++    #print the elements
++    stack1.print_stack()
++
++    #peek top element
++    print("Top element: ", stack1.peek())
++
++    #pop elements
++    print("Popped:", stack1.pop()) #Expected: 4000
++    stack1.print_stack() #Expected 1000 >>> 2000 >>> 3000
++
++    #Check if empty
++    print("Is stack empty?", stack1.is_empty()) #Expected: False
++
++    # pop all to empty
++    stack1.pop()
++    stack1.pop()
++    print("Is stack empty after popping all?", stack1.is_empty())
++
++
++
++
++
++

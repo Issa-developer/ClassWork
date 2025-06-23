@@ -1,0 +1,157 @@
+Index: Graph.py
+===================================================================
+diff --git a/Graph.py b/Graph.py
+--- a/Graph.py	(revision ae95cf6fcbe776c22709095d78a835ce135589ce)
++++ b/Graph.py	(date 1750657082657)
+@@ -1,0 +1,101 @@
++from inspect import stack
++
++
++class Graph:
++    def __init__(self, directed=False):
++        self.directed = directed
++        self.adj_list = dict()
++
++    def __repr__(self):
++        graph_str = ""
++        for node, neighbours in self.adj_list.items():
++            graph_str += f"{node} --> {neighbours}\n"
++        return graph_str
++
++    def obtain_neighbours(self, node):
++        return self.adj_list.get(node, set())
++
++    def add_node(self, node):
++        if node not in self.adj_list:
++            self.adj_list[node] = set()
++        else:
++            raise ValueError("Node already exists")
++
++    def add_edge(self, from_node, to_node, weight=None):
++        if from_node not in self.adj_list:
++            self.add_node(from_node)
++
++        if to_node not in self.adj_list:
++            self.add_node(to_node)
++
++        if weight is None:
++            self.adj_list[from_node].add(to_node)
++            if not self.directed:
++                self.adj_list[to_node].add(from_node)
++        else:
++            self.adj_list[from_node].add((to_node, weight))
++            if not self.directed:
++                self.adj_list[to_node].add((from_node, weight))
++
++    def depth_first_search(self, start):
++        visited = set()
++        stack = [start]
++        order = []
++
++        while stack:
++            node = stack.pop()
++
++            if node not in visited:
++                visited.add(node)
++                order.append(node)
++
++                neighbours = self.obtain_neighbours(node)
++
++                for neighbour in neighbours:
++                    if isinstance(neighbour, tuple):
++                        neighbour_node = neighbour[0]
++                    else:
++                        neighbour_node = neighbour
++
++                    if neighbour_node not in visited:
++                        stack.append(neighbour_node)
++
++        return order
++
++    def breadth_first_search(self, start):
++        visited = set()
++        queue = [start]
++        order = []
++
++        while queue:
++            node = queue.pop(0)
++
++            if node not in visited:
++                visited.add(node)
++                order.append(node)
++
++                neighbours = self.obtain_neighbours(node)
++
++                for neighbour in neighbours:
++                    if isinstance(neighbour, tuple):
++                        neighbour_node = neighbour[0]
++                    else:
++                        neighbour_node = neighbour
++
++                    if neighbour_node not in visited:
++                        queue.append(neighbour_node)
++
++        return order
++
++
++if __name__== '__main__':
++    graph_obj = Graph(False)
++
++    graph_obj.add_edge("A", "B", 2)
++    graph_obj.add_edge("A", "C", 24)
++    graph_obj.add_edge("A", "D", 50)
++    graph_obj.add_edge("C", "D")
++
++    print(graph_obj)
++    print("DFS SEARCH YIELDS:", graph_obj.depth_first_search("A"))
++    print("BFS SEARCH YIELDS:", graph_obj.breadth_first_search("A"))
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"bfb409cc-43ad-48f0-9a70-a0dd99ec7217\" name=\"Changes\" comment=\"Initial commit\">\r\n      <change afterPath=\"$PROJECT_DIR$/Graph.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/LinkedLists.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/QueuesUsingCircularArrays.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ShoppingCart.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/StacksBasics.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/StacksLList.py\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/traversals.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"PUSH_TAGS\">\r\n      <GitPushTagMode>\r\n        <option name=\"argument\" value=\"--tags\" />\r\n        <option name=\"title\" value=\"All\" />\r\n      </GitPushTagMode>\r\n    </option>\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"ft-trees\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;Issa-developer&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/Issa-developer/ClassWork.git&quot;,\r\n    &quot;accountId&quot;: &quot;8c8db06c-dfd5-4185-9e8f-fd9e7f14e163&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 4\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2xanvnxUIllQJWQq3IS8mA7Vj6I\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"Python.LinkedLists.executor\": \"Run\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"git-widget-placeholder\": \"ft-Graphs\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-4f4e415b4190-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.26053.29\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"bfb409cc-43ad-48f0-9a70-a0dd99ec7217\" name=\"Changes\" comment=\"\" />\r\n      <created>1748185284222</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1748185284222</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Initial commit\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1748185328974</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1748185328974</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Initial commit\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Initial commit\" />\r\n  </component>\r\n</project>
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision ae95cf6fcbe776c22709095d78a835ce135589ce)
++++ b/.idea/workspace.xml	(date 1750657303717)
+@@ -5,13 +5,14 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="bfb409cc-43ad-48f0-9a70-a0dd99ec7217" name="Changes" comment="Initial commit">
+-      <change afterPath="$PROJECT_DIR$/Graph.py" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/LinkedLists.py" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/QueuesUsingCircularArrays.py" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/ShoppingCart.py" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/StacksBasics.py" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/StacksLList.py" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/traversals.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Graph.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -64,6 +65,7 @@
+   </component>
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
++    "Python.Graph.executor": "Run",
+     "Python.LinkedLists.executor": "Run",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
+     "RunOnceActivity.git.unshallow": "true",
+@@ -94,7 +96,15 @@
+       <option name="project" value="LOCAL" />
+       <updated>1748185328974</updated>
+     </task>
+-    <option name="localTasksCounter" value="2" />
++    <task id="LOCAL-00002" summary="Initial commit">
++      <option name="closed" value="true" />
++      <created>1750054326253</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1750054326253</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="VcsManagerConfiguration">
